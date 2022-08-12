@@ -87,6 +87,7 @@ async function pickThePhoto(e) {
   }
 
 function smothScroll(mulltiplie) {
+  
   const { height: cardHeight } = document
   .querySelector(".gallery")
   .firstElementChild.getBoundingClientRect();
