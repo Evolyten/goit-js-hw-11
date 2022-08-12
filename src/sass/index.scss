@@ -1,0 +1,36 @@
+@import './common';
+@import './example';
+body{
+    margin: 0 auto;
+}
+
+section{
+    text-align: center;
+    padding: 20px 0;
+}
+.gallery {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content:space-between;
+}
+.photo-card{
+    width: 250px;
+    margin-bottom: 20px;
+}
+.info{
+    display: flex;
+    flex-wrap: wrap;
+}
+body{
+    width: 1200px;
+}
+
+
+p{
+    margin: 0;
+}
+
+.is-hiden{
+    display: none;
+}
