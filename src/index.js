@@ -75,7 +75,6 @@ async function pickThePhoto(e) {
   } else {
     Notiflix.Notify.success(`Hooray! We found ${UserChoice.totalHits} images.`);
     totalCase = l.length
-    console.log(totalfound)
     createGalleryMarkup(l)
     gallery.refresh()
     if (UserChoice.totalHits > totalCase) {
