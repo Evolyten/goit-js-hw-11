@@ -28,8 +28,13 @@ async function fetchPhoto(callback){
   const k = await fetchImg.json()
   return k
 }
-let page = 1
-let totalCase=0
+
+const variables = {
+  page: 1,
+  totalCase: 0,
+  functionCounter:1,
+}
+
 refs.searchBtnEL.addEventListener('click',pickThePhoto)
 window.addEventListener('scroll',throttle(scrollAddItem,200))
 
@@ -46,16 +51,17 @@ let gallery = new SimpleLightbox('.gallery a',{close:true})
 gallery.on('show.simplelightbox', function () { });
 
 async function loadMore() {
-  page += 1
-  let k = createOptions(refs.inputEl.value,page).toString()
+  variables.page += 1
+  let k = createOptions(refs.inputEl.value,variables.page).toString()
   const UserChoice = await fetchPhoto(k)
   const l = await UserChoice.hits
   createGalleryMarkup(l)
   gallery.refresh()
    smothScroll(2)
-  totalCase += l.length
-  if (UserChoice.totalHits <= totalCase) {
-    setTimeout(lastPhotos,1000) 
+  variables.totalCase += l.length
+  if (UserChoice.totalHits <= variables.totalCase&&variables.functionCounter===1) {
+    Notiflix.Notify.info(`We're sorry, but you've reached the end of search results.`);
+    variables.functionCounter+=1
   }
 }
 
@@ -64,23 +70,26 @@ async function pickThePhoto(e) {
   e.preventDefault()
   let userPick = refs.inputEl.value
   refs.galleryWrapEl.textContent = ""
-  page=1
-  let k = createOptions(userPick,page).toString()
+  variables.functionCounter=1
+  if (userPick == "") {
+    return Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
+  }
+  variables.page=1
+  let k = createOptions(userPick,variables.page).toString()
   const UserChoice = await fetchPhoto(k)
   const l = await UserChoice.hits
-  console.log(l)
-  if (l.length <1 || userPick=="") {
+  if (l.length <1) {
     Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
 
   } else {
     Notiflix.Notify.success(`Hooray! We found ${UserChoice.totalHits} images.`);
-    totalCase = l.length
+    variables.totalCase = l.length
     createGalleryMarkup(l)
     gallery.refresh()
-    if (UserChoice.totalHits > totalCase) {
+    if (UserChoice.totalHits > variables.totalCase) {
        smothScroll(1)
     } else {
-      lastPhotos()
+      Notiflix.Notify.info(`We're sorry, but you've reached the end of search results.`);
     }
     }
     
@@ -126,8 +135,3 @@ return refs.galleryWrapEl.insertAdjacentHTML("beforeend", k)
 }
 
 
-function lastPhotos() {
- 
-      Notiflix.Notify.info(`We're sorry, but you've reached the end of search results.`);
-  
-}
